@@ -1,0 +1,309 @@
+---
+import ToolLayout from "../layouts/ToolLayout.astro";
+---
+<ToolLayout
+  title="PDF Merger: Combine PDF Files Online Free"
+  description="Merge multiple PDF files into one. Reorder files, then download the combined PDF. Free, private, and runs in your browser. Files are never uploaded."
+>
+  <h1>PDF Merger</h1>
+  <p class="pm-intro">
+    Combine several PDF files into a single PDF. Add your files, put them in the order you
+    want, and download the result. Your files never leave your browser.
+  </p>
+
+  <section class="pm-box">
+    <div id="pm-drop" class="pm-drop" tabindex="0" role="button" aria-label="Choose PDF files to merge">
+      <p><strong>Drop PDF files here</strong> or click to choose</p>
+      <small>Nothing is uploaded. Everything happens on your device.</small>
+      <input id="pm-input" type="file" accept=".pdf,application/pdf" multiple hidden />
+    </div>
+    <p id="pm-msg" class="pm-msg"></p>
+  </section>
+
+  <section id="pm-list-box" class="pm-box pm-hidden">
+    <div class="pm-top">
+      <h2>Your files (in merge order)</h2>
+      <div class="pm-top-actions">
+        <button id="pm-sort" class="pm-secondary" type="button">Sort A to Z</button>
+        <button id="pm-clear" class="pm-secondary" type="button">Clear all</button>
+      </div>
+    </div>
+    <p id="pm-summary" class="pm-summary"></p>
+    <ul id="pm-list" class="pm-list"></ul>
+
+    <label class="pm-name">Output file name
+      <input id="pm-outname" type="text" value="merged" />
+    </label>
+
+    <div class="pm-actions">
+      <button id="pm-merge" class="btn" type="button" disabled>Merge and download</button>
+    </div>
+  </section>
+
+  <section class="pm-content">
+    <h2>How to merge PDF files</h2>
+    <ol>
+      <li>Drop your PDF files into the box above, or click it to choose files.</li>
+      <li>Use the up and down arrows to put the files in the order you want.</li>
+      <li>Remove any file you do not need with the ✕ button.</li>
+      <li>Click <strong>Merge and download</strong> to get one combined PDF.</li>
+    </ol>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Are my PDFs uploaded anywhere?</h3>
+    <p>No. The merging happens entirely in your browser. Your documents are never sent to a server.</p>
+    <h3>Does merging reduce the quality?</h3>
+    <p>No. Pages are copied as they are, so text, images, and layout stay the same.</p>
+    <h3>Why does a file show an error?</h3>
+    <p>The file is probably password-protected or damaged. Remove the password in your PDF viewer, save a copy, and add it again.</p>
+    <h3>Can I merge a lot of files?</h3>
+    <p>Yes, but the result is built in your device's memory, so very large batches (hundreds of MB) may be slow on older phones or computers.</p>
+    <h3>Does it keep bookmarks and form fields?</h3>
+    <p>The page content is kept. Bookmarks and some interactive form features from the original files may not carry over into the merged file.</p>
+  </section>
+</ToolLayout>
+
+<style is:global>
+  .pm-intro { color: var(--muted); max-width: 720px; }
+  .pm-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px; margin: 20px 0;
+  }
+  .pm-box h2 { margin: 0; font-size: 1.15rem; }
+  .pm-hidden { display: none !important; }
+  .pm-drop {
+    border: 2px dashed var(--border); border-radius: 12px; padding: 36px 16px;
+    text-align: center; cursor: pointer; background: var(--bg);
+  }
+  .pm-drop:hover, .pm-drop:focus, .pm-over { border-color: var(--accent); outline: none; }
+  .pm-drop p { margin: 0 0 4px; font-size: 1.1rem; }
+  .pm-drop small { color: var(--muted); }
+  .pm-msg { margin: 10px 0 0; color: #c62828; font-size: 0.9rem; }
+  .pm-msg:empty { display: none; }
+  .pm-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pm-top-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pm-summary { margin: 0 0 12px; font-weight: 600; }
+  .pm-summary.pm-bad { color: #c62828; }
+  .pm-list { list-style: none; margin: 0 0 16px; padding: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .pm-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+    border-bottom: 1px solid var(--border); background: #fff;
+  }
+  .pm-item:last-child { border-bottom: 0; }
+  .pm-item.pm-item-bad { background: #fdecea; }
+  .pm-num { width: 26px; color: var(--muted); font-size: 0.9rem; flex-shrink: 0; }
+  .pm-info { flex: 1; min-width: 0; }
+  .pm-fname { font-weight: 600; word-break: break-all; }
+  .pm-meta { color: var(--muted); font-size: 0.85rem; }
+  .pm-item-bad .pm-meta { color: #c62828; }
+  .pm-btns { display: flex; gap: 4px; flex-shrink: 0; }
+  .pm-icon {
+    background: #fff; border: 1px solid var(--border); border-radius: 6px;
+    width: 34px; height: 34px; cursor: pointer; font-size: 1rem; color: var(--text);
+  }
+  .pm-icon:hover:not(:disabled) { border-color: var(--accent); }
+  .pm-icon:disabled { opacity: 0.35; cursor: not-allowed; }
+  .pm-icon.pm-del:hover:not(:disabled) { color: #c62828; border-color: #c62828; }
+  .pm-name { display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; font-weight: 600; max-width: 360px; }
+  .pm-name input {
+    padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 1rem; font-weight: 400; background: #fff; color: var(--text); width: 100%;
+  }
+  .pm-actions { margin-top: 16px; }
+  .pm-actions .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .pm-secondary {
+    background: #fff; border: 1px solid var(--border); border-radius: 8px;
+    padding: 9px 14px; font-size: 0.95rem; cursor: pointer; color: var(--text);
+  }
+  .pm-secondary:hover { border-color: var(--accent); }
+  .pm-content { margin-top: 36px; max-width: 760px; }
+  .pm-content h2 { margin-top: 28px; }
+  .pm-content h3 { margin: 18px 0 4px; font-size: 1rem; }
+  .pm-content p { margin: 0 0 8px; }
+</style>
+
+<script>
+  import { PDFDocument } from "pdf-lib";
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+  let items = [];
+  let nextId = 1;
+  let busy = false;
+
+  const drop = $("pm-drop");
+  const input = $("pm-input");
+
+  // ---------- adding files ----------
+  drop.addEventListener("click", () => input.click());
+  drop.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); }
+  });
+  input.addEventListener("change", () => { addFiles(input.files); input.value = ""; });
+  ["dragenter", "dragover"].forEach((ev) =>
+    drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("pm-over"); })
+  );
+  ["dragleave", "drop"].forEach((ev) =>
+    drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("pm-over"); })
+  );
+  drop.addEventListener("drop", (e) => addFiles(e.dataTransfer.files));
+
+  function isPdf(f) {
+    return f.type === "application/pdf" || /\.pdf$/i.test(f.name);
+  }
+
+  async function addFiles(list) {
+    const msg = $("pm-msg");
+    msg.textContent = "";
+    const all = Array.from(list);
+    const pdfs = all.filter(isPdf);
+    const skipped = all.length - pdfs.length;
+    if (skipped > 0) {
+      msg.textContent = skipped + (skipped === 1 ? " file was" : " files were") + " skipped because it is not a PDF.";
+    }
+
+    for (const f of pdfs) {
+      const item = { id: nextId++, file: f, pages: 0, error: "", loading: true };
+      items.push(item);
+      render();
+      try {
+        const buf = await f.arrayBuffer();
+        const doc = await PDFDocument.load(buf, { updateMetadata: false });
+        item.pages = doc.getPageCount();
+      } catch (err) {
+        item.error = "Cannot read this file. It may be password-protected or damaged.";
+      }
+      item.loading = false;
+      render();
+    }
+  }
+
+  // ---------- rendering ----------
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  }
+
+  function render() {
+    const box = $("pm-list-box");
+    if (items.length === 0) {
+      box.classList.add("pm-hidden");
+      return;
+    }
+    box.classList.remove("pm-hidden");
+
+    $("pm-list").innerHTML = items
+      .map((it, i) => {
+        let meta = formatSize(it.file.size);
+        if (it.loading) meta += " · reading...";
+        else if (it.error) meta = it.error;
+        else meta += " · " + it.pages + (it.pages === 1 ? " page" : " pages");
+        return `<li class="pm-item ${it.error ? "pm-item-bad" : ""}">
+          <span class="pm-num">${i + 1}</span>
+          <div class="pm-info">
+            <div class="pm-fname">${esc(it.file.name)}</div>
+            <div class="pm-meta">${esc(meta)}</div>
+          </div>
+          <div class="pm-btns">
+            <button class="pm-icon" data-act="up" data-id="${it.id}" title="Move up" aria-label="Move up" ${i === 0 ? "disabled" : ""}>↑</button>
+            <button class="pm-icon" data-act="down" data-id="${it.id}" title="Move down" aria-label="Move down" ${i === items.length - 1 ? "disabled" : ""}>↓</button>
+            <button class="pm-icon pm-del" data-act="del" data-id="${it.id}" title="Remove" aria-label="Remove file">✕</button>
+          </div>
+        </li>`;
+      })
+      .join("");
+
+    const bad = items.filter((x) => x.error).length;
+    const loading = items.some((x) => x.loading);
+    const good = items.filter((x) => !x.error && !x.loading);
+    const totalPages = good.reduce((n, x) => n + x.pages, 0);
+    const summary = $("pm-summary");
+
+    if (bad > 0) {
+      summary.textContent = bad + (bad === 1 ? " file has" : " files have") + " a problem. Remove it to continue.";
+      summary.classList.add("pm-bad");
+    } else if (good.length < 2) {
+      summary.textContent = "Add at least 2 PDF files to merge.";
+      summary.classList.remove("pm-bad");
+    } else {
+      summary.textContent = good.length + " files, " + totalPages + " pages in total.";
+      summary.classList.remove("pm-bad");
+    }
+
+    $("pm-merge").disabled = busy || loading || bad > 0 || good.length < 2;
+  }
+
+  // ---------- list actions ----------
+  $("pm-list").addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn || busy) return;
+    const id = Number(btn.dataset.id);
+    const i = items.findIndex((x) => x.id === id);
+    if (i < 0) return;
+    const act = btn.dataset.act;
+    if (act === "del") items.splice(i, 1);
+    else if (act === "up" && i > 0) [items[i - 1], items[i]] = [items[i], items[i - 1]];
+    else if (act === "down" && i < items.length - 1) [items[i + 1], items[i]] = [items[i], items[i + 1]];
+    render();
+  });
+
+  $("pm-sort").addEventListener("click", () => {
+    if (busy) return;
+    items.sort((a, b) => a.file.name.localeCompare(b.file.name, undefined, { numeric: true }));
+    render();
+  });
+
+  $("pm-clear").addEventListener("click", () => {
+    if (busy) return;
+    items = [];
+    $("pm-msg").textContent = "";
+    render();
+  });
+
+  // ---------- merging ----------
+  function safeName(raw) {
+    let n = raw.trim().replace(/\.pdf$/i, "").replace(/[\\/:*?"<>|\u0000-\u001f]/g, "_");
+    n = n.replace(/[. ]+$/, "");
+    return (n || "merged") + ".pdf";
+  }
+
+  $("pm-merge").addEventListener("click", async () => {
+    const btn = $("pm-merge");
+    const msg = $("pm-msg");
+    msg.textContent = "";
+    busy = true;
+    btn.disabled = true;
+
+    try {
+      const out = await PDFDocument.create();
+      for (let i = 0; i < items.length; i++) {
+        btn.textContent = "Merging " + (i + 1) + " of " + items.length + "...";
+        const buf = await items[i].file.arrayBuffer();
+        const src = await PDFDocument.load(buf, { updateMetadata: false });
+        const pages = await out.copyPages(src, src.getPageIndices());
+        pages.forEach((p) => out.addPage(p));
+      }
+      btn.textContent = "Saving...";
+      const bytes = await out.save();
+
+      const blob = new Blob([bytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = safeName($("pm-outname").value);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch (err) {
+      msg.textContent = "Could not merge the files: " + (err && err.message ? err.message : "unknown error");
+    } finally {
+      busy = false;
+      btn.textContent = "Merge and download";
+      render();
+    }
+  });
+</script>
