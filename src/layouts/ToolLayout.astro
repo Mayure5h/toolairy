@@ -1,0 +1,72 @@
+---
+const { title, description } = Astro.props;
+const SITE_NAME = "My Tools"; // change this once you pick your name
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} | {SITE_NAME}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a href="/" class="logo">{SITE_NAME}</a>
+        <nav><a href="/">All tools</a></nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>Your files never leave your browser. All tools run locally on your device.</p>
+        <nav>
+          <a href="/privacy">Privacy</a>
+          <a href="/about">About</a>
+          <a href="/contact">Contact</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #f7f8fa;
+    --card: #ffffff;
+    --text: #1d2330;
+    --muted: #5b6475;
+    --accent: #2f6fed;
+    --border: #e2e6ee;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+  a { color: var(--accent); }
+  .site-header { background: var(--card); border-bottom: 1px solid var(--border); }
+  .site-header .wrap { display: flex; justify-content: space-between; align-items: center; height: 56px; }
+  .logo { font-weight: 700; font-size: 1.15rem; color: var(--text); text-decoration: none; }
+  .site-footer { margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; }
+  .site-footer nav { display: flex; gap: 16px; }
+  h1 { font-size: 1.8rem; margin: 32px 0 8px; }
+  .btn {
+    background: var(--accent); color: #fff; border: 0; border-radius: 8px;
+    padding: 10px 18px; font-size: 1rem; cursor: pointer;
+  }
+  .btn:hover { filter: brightness(0.92); }
+</style>
