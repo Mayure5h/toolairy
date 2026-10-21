@@ -1,0 +1,367 @@
+---
+import ToolLayout from "../layouts/ToolLayout.astro";
+---
+<ToolLayout
+  title="Bulk File Renamer: Rename Multiple Files Online Free"
+  description="Rename many files at once with prefixes, suffixes, numbering, and find and replace. Free, private, and runs in your browser. Files are never uploaded."
+>
+  <h1>Bulk File Renamer</h1>
+  <p class="rn-intro">
+    Rename many files in one go. Add a prefix or suffix, number the files, find and replace
+    text, or change letter case. Preview the new names, then download everything as a ZIP.
+    Your files never leave your browser.
+  </p>
+
+  <section class="rn-box">
+    <div id="rn-drop" class="rn-drop" tabindex="0" role="button" aria-label="Choose files to rename">
+      <p><strong>Drop files here</strong> or click to choose</p>
+      <small>Nothing is uploaded. Everything happens on your device.</small>
+      <input id="rn-input" type="file" multiple hidden />
+    </div>
+  </section>
+
+  <section class="rn-box">
+    <h2>1. Set your rules</h2>
+    <div class="rn-grid">
+      <label>Find text
+        <input id="rn-find" type="text" placeholder="e.g. IMG" />
+      </label>
+      <label>Replace with
+        <input id="rn-replace" type="text" placeholder="e.g. Holiday" />
+      </label>
+      <label>Add prefix
+        <input id="rn-prefix" type="text" placeholder="e.g. 2026-" />
+      </label>
+      <label>Add suffix
+        <input id="rn-suffix" type="text" placeholder="e.g. -final" />
+      </label>
+      <label>Letter case
+        <select id="rn-case">
+          <option value="none">Keep as is</option>
+          <option value="lower">lowercase</option>
+          <option value="upper">UPPERCASE</option>
+          <option value="title">Title Case</option>
+        </select>
+      </label>
+      <label>File order (for numbering)
+        <select id="rn-sort">
+          <option value="added">As added</option>
+          <option value="az">Name A to Z</option>
+          <option value="za">Name Z to A</option>
+          <option value="date">Date modified</option>
+        </select>
+      </label>
+    </div>
+
+    <label class="rn-check"><input id="rn-matchcase" type="checkbox" /> Match case when finding text</label>
+    <label class="rn-check"><input id="rn-num-on" type="checkbox" /> Add sequential numbers</label>
+
+    <div id="rn-num-opts" class="rn-grid rn-hidden">
+      <label>Start at
+        <input id="rn-start" type="number" value="1" step="1" />
+      </label>
+      <label>Step
+        <input id="rn-step" type="number" value="1" step="1" />
+      </label>
+      <label>Digits (padding)
+        <input id="rn-pad" type="number" value="3" min="1" max="10" />
+      </label>
+      <label>Separator
+        <input id="rn-sep" type="text" value="_" />
+      </label>
+      <label>Position
+        <select id="rn-pos">
+          <option value="after">After the name</option>
+          <option value="before">Before the name</option>
+        </select>
+      </label>
+    </div>
+    <p class="rn-note">File extensions (like .jpg) are always kept unchanged.</p>
+  </section>
+
+  <section id="rn-preview" class="rn-box rn-hidden">
+    <h2>2. Preview</h2>
+    <p id="rn-summary" class="rn-summary"></p>
+    <div class="rn-tablewrap">
+      <table class="rn-table">
+        <thead>
+          <tr><th>#</th><th>Original name</th><th>New name</th><th></th></tr>
+        </thead>
+        <tbody id="rn-body"></tbody>
+      </table>
+    </div>
+    <div class="rn-actions">
+      <button id="rn-download" class="btn" type="button">Download ZIP</button>
+      <button id="rn-clear" class="rn-secondary" type="button">Clear all</button>
+    </div>
+  </section>
+
+  <section class="rn-content">
+    <h2>How to rename files in bulk</h2>
+    <ol>
+      <li>Drop your files into the box above, or click it to choose files.</li>
+      <li>Set one or more rules: find and replace, prefix, suffix, case, or numbering.</li>
+      <li>Check the preview table. Any problems are highlighted in red.</li>
+      <li>Click <strong>Download ZIP</strong> to get all files with their new names.</li>
+    </ol>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Are my files uploaded anywhere?</h3>
+    <p>No. The tool runs entirely in your browser. Your files are never sent to a server.</p>
+    <h3>Does it rename my original files?</h3>
+    <p>Browsers cannot rename files on your computer directly, so you download renamed copies in a ZIP. Your originals stay untouched.</p>
+    <h3>Will the file extension change?</h3>
+    <p>No. Only the name part is changed, so photo.jpg stays a .jpg file.</p>
+    <h3>What happens if two files get the same name?</h3>
+    <p>The tool highlights the duplicates and disables the download until you fix them, for example by adding numbering.</p>
+    <h3>Is there a limit on the number or size of files?</h3>
+    <p>There is no fixed limit, but the ZIP is built in your device's memory. Very large batches (several GB) may be slow on older phones or computers.</p>
+  </section>
+</ToolLayout>
+
+<style is:global>
+  .rn-intro { color: var(--muted); max-width: 720px; }
+  .rn-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px; margin: 20px 0;
+  }
+  .rn-box h2 { margin: 0 0 12px; font-size: 1.15rem; }
+  .rn-hidden { display: none !important; }
+  .rn-drop {
+    border: 2px dashed var(--border); border-radius: 12px; padding: 36px 16px;
+    text-align: center; cursor: pointer; background: var(--bg);
+  }
+  .rn-drop:hover, .rn-drop:focus, .rn-over { border-color: var(--accent); outline: none; }
+  .rn-drop p { margin: 0 0 4px; font-size: 1.1rem; }
+  .rn-drop small { color: var(--muted); }
+  .rn-grid {
+    display: grid; gap: 12px; margin-bottom: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  .rn-box label { display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; font-weight: 600; }
+  .rn-box input[type="text"], .rn-box input[type="number"], .rn-box select {
+    padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 1rem; font-weight: 400; background: #fff; color: var(--text); width: 100%;
+  }
+  .rn-box label.rn-check { flex-direction: row; align-items: center; gap: 8px; font-weight: 400; margin: 8px 0; }
+  .rn-note { color: var(--muted); font-size: 0.85rem; margin: 8px 0 0; }
+  .rn-summary { margin: 0 0 12px; font-weight: 600; }
+  .rn-summary.rn-bad { color: #c62828; }
+  .rn-tablewrap { overflow-x: auto; max-height: 420px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
+  .rn-table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+  .rn-table th, .rn-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); word-break: break-all; }
+  .rn-table th { background: var(--bg); position: sticky; top: 0; }
+  .rn-table tr.rn-row-bad td { background: #fdecea; }
+  .rn-err { display: block; color: #c62828; font-size: 0.8rem; }
+  .rn-x { background: none; border: 0; cursor: pointer; font-size: 1.1rem; color: var(--muted); }
+  .rn-x:hover { color: #c62828; }
+  .rn-actions { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+  .rn-actions .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .rn-secondary {
+    background: #fff; border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 18px; font-size: 1rem; cursor: pointer; color: var(--text);
+  }
+  .rn-content { margin-top: 36px; max-width: 760px; }
+  .rn-content h2 { margin-top: 28px; }
+  .rn-content h3 { margin: 18px 0 4px; font-size: 1rem; }
+  .rn-content p { margin: 0 0 8px; }
+</style>
+
+<script>
+  import JSZip from "jszip";
+
+  const $ = (id) => document.getElementById(id);
+  const INVALID = /[\\/:*?"<>|\u0000-\u001f]/;
+
+  let files = [];
+  let current = [];
+
+  // ---------- adding files ----------
+  const drop = $("rn-drop");
+  const input = $("rn-input");
+
+  drop.addEventListener("click", () => input.click());
+  drop.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); }
+  });
+  input.addEventListener("change", () => { addFiles(input.files); input.value = ""; });
+  ["dragenter", "dragover"].forEach((ev) =>
+    drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("rn-over"); })
+  );
+  ["dragleave", "drop"].forEach((ev) =>
+    drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("rn-over"); })
+  );
+  drop.addEventListener("drop", (e) => addFiles(e.dataTransfer.files));
+
+  function addFiles(list) {
+    for (const f of list) {
+      const dup = files.some(
+        (x) => x.name === f.name && x.size === f.size && x.lastModified === f.lastModified
+      );
+      if (!dup) files.push(f);
+    }
+    render();
+  }
+
+  // ---------- naming logic ----------
+  function splitName(name) {
+    const i = name.lastIndexOf(".");
+    if (i <= 0) return [name, ""];
+    return [name.slice(0, i), name.slice(i)];
+  }
+
+  function escapeRegExp(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function readOptions() {
+    return {
+      find: $("rn-find").value,
+      replace: $("rn-replace").value,
+      matchCase: $("rn-matchcase").checked,
+      prefix: $("rn-prefix").value,
+      suffix: $("rn-suffix").value,
+      letterCase: $("rn-case").value,
+      numOn: $("rn-num-on").checked,
+      start: parseInt($("rn-start").value, 10) || 0,
+      step: parseInt($("rn-step").value, 10) || 1,
+      pad: Math.max(1, Math.min(10, parseInt($("rn-pad").value, 10) || 1)),
+      sep: $("rn-sep").value,
+      pos: $("rn-pos").value,
+    };
+  }
+
+  function newName(file, index, o) {
+    let [base, ext] = splitName(file.name);
+
+    if (o.find) {
+      const re = new RegExp(escapeRegExp(o.find), o.matchCase ? "g" : "gi");
+      base = base.replace(re, () => o.replace);
+    }
+
+    if (o.letterCase === "lower") base = base.toLowerCase();
+    else if (o.letterCase === "upper") base = base.toUpperCase();
+    else if (o.letterCase === "title") {
+      base = base
+        .toLowerCase()
+        .replace(/(^|[\s_\-.])([a-z\u00c0-\u024f])/g, (m, a, b) => a + b.toUpperCase());
+    }
+
+    base = o.prefix + base + o.suffix;
+
+    if (o.numOn) {
+      const num = String(o.start + index * o.step).padStart(o.pad, "0");
+      base = o.pos === "before" ? num + o.sep + base : base + o.sep + num;
+    }
+    return base + ext;
+  }
+
+  function validate(name) {
+    if (!name || name.startsWith(".") && name.length === 1) return "Name is empty";
+    if (INVALID.test(name)) return 'Contains an invalid character (\\ / : * ? " < > |)';
+    if (/[. ]$/.test(name)) return "Cannot end with a dot or space";
+    if (name.length > 255) return "Name is too long";
+    return "";
+  }
+
+  function ordered() {
+    const arr = [...files];
+    const mode = $("rn-sort").value;
+    if (mode === "az") arr.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    else if (mode === "za") arr.sort((a, b) => b.name.localeCompare(a.name, undefined, { numeric: true }));
+    else if (mode === "date") arr.sort((a, b) => a.lastModified - b.lastModified);
+    return arr;
+  }
+
+  const esc = (s) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+  // ---------- rendering ----------
+  function render() {
+    const preview = $("rn-preview");
+    if (files.length === 0) {
+      preview.classList.add("rn-hidden");
+      current = [];
+      return;
+    }
+    preview.classList.remove("rn-hidden");
+
+    const o = readOptions();
+    current = ordered().map((f, i) => ({ file: f, newName: newName(f, i, o) }));
+
+    const counts = new Map();
+    current.forEach((r) => {
+      const k = r.newName.toLowerCase();
+      counts.set(k, (counts.get(k) || 0) + 1);
+    });
+
+    let problems = 0;
+    const rows = current.map((r, i) => {
+      let err = validate(r.newName);
+      if (!err && counts.get(r.newName.toLowerCase()) > 1) err = "Duplicate name";
+      if (err) problems++;
+      return `<tr class="${err ? "rn-row-bad" : ""}">
+        <td>${i + 1}</td>
+        <td>${esc(r.file.name)}</td>
+        <td>${esc(r.newName)}${err ? `<span class="rn-err">${esc(err)}</span>` : ""}</td>
+        <td><button class="rn-x" data-i="${i}" title="Remove" aria-label="Remove file">✕</button></td>
+      </tr>`;
+    });
+    $("rn-body").innerHTML = rows.join("");
+
+    const summary = $("rn-summary");
+    if (problems > 0) {
+      summary.textContent = `${current.length} files. ${problems} need fixing before you can download.`;
+      summary.classList.add("rn-bad");
+    } else {
+      summary.textContent = `${current.length} files ready to rename.`;
+      summary.classList.remove("rn-bad");
+    }
+    $("rn-download").disabled = problems > 0;
+  }
+
+  // ---------- events ----------
+  ["rn-find", "rn-replace", "rn-prefix", "rn-suffix", "rn-case", "rn-sort", "rn-matchcase",
+   "rn-start", "rn-step", "rn-pad", "rn-sep", "rn-pos"].forEach((id) =>
+    $(id).addEventListener("input", render)
+  );
+
+  $("rn-num-on").addEventListener("change", () => {
+    $("rn-num-opts").classList.toggle("rn-hidden", !$("rn-num-on").checked);
+    render();
+  });
+
+  $("rn-body").addEventListener("click", (e) => {
+    const btn = e.target.closest(".rn-x");
+    if (!btn) return;
+    const item = current[Number(btn.dataset.i)];
+    if (item) files = files.filter((f) => f !== item.file);
+    render();
+  });
+
+  $("rn-clear").addEventListener("click", () => { files = []; render(); });
+
+  $("rn-download").addEventListener("click", async () => {
+    const btn = $("rn-download");
+    btn.disabled = true;
+    btn.textContent = "Creating ZIP...";
+    try {
+      const zip = new JSZip();
+      current.forEach((r) => zip.file(r.newName, r.file, { date: new Date(r.file.lastModified) }));
+      const blob = await zip.generateAsync({ type: "blob", compression: "STORE" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "renamed-files.zip";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch (err) {
+      alert("Could not create the ZIP: " + err.message);
+    } finally {
+      btn.textContent = "Download ZIP";
+      render();
+    }
+  });
+</script>
