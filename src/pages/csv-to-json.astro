@@ -1,0 +1,273 @@
+---
+import ToolLayout from "../layouts/ToolLayout.astro";
+---
+<ToolLayout
+  title="CSV to JSON Converter: Convert CSV Online Free"
+  description="Convert CSV to JSON instantly. Choose the delimiter, header row, and formatting, then copy or download the result. Free, private, and runs in your browser."
+>
+  <h1>CSV to JSON Converter</h1>
+  <p class="cj-intro">
+    Paste CSV data or choose a CSV file and get clean JSON right away. Your data never
+    leaves your browser.
+  </p>
+
+  <section class="cj-box">
+    <div class="cj-top">
+      <h2>1. Add your CSV</h2>
+      <div class="cj-top-actions">
+        <button id="cj-pick" class="cj-secondary" type="button">Choose CSV file</button>
+        <button id="cj-sample" class="cj-secondary" type="button">Load sample</button>
+        <button id="cj-clear" class="cj-secondary" type="button">Clear</button>
+      </div>
+      <input id="cj-file" type="file" accept=".csv,.tsv,.txt,text/csv,text/plain" hidden />
+    </div>
+    <textarea id="cj-in" class="cj-text" rows="10" spellcheck="false"
+      placeholder="Paste CSV here, for example:&#10;name,age,city&#10;Asha,29,Pune&#10;Ravi,34,Mumbai"></textarea>
+  </section>
+
+  <section class="cj-box">
+    <h2>2. Options</h2>
+    <div class="cj-grid">
+      <label>Delimiter
+        <select id="cj-delim">
+          <option value="auto">Auto-detect</option>
+          <option value=",">Comma ( , )</option>
+          <option value=";">Semicolon ( ; )</option>
+          <option value="&#9;">Tab</option>
+          <option value="|">Pipe ( | )</option>
+        </select>
+      </label>
+      <label>Indentation
+        <select id="cj-indent">
+          <option value="2">2 spaces</option>
+          <option value="4">4 spaces</option>
+          <option value="tab">Tab</option>
+          <option value="0">Minified</option>
+        </select>
+      </label>
+    </div>
+    <label class="cj-check"><input id="cj-header" type="checkbox" checked /> First row is the header (output a list of objects)</label>
+    <label class="cj-check"><input id="cj-types" type="checkbox" checked /> Convert numbers and true/false to real JSON types</label>
+    <label class="cj-check"><input id="cj-trim" type="checkbox" checked /> Trim spaces around values</label>
+    <label class="cj-check"><input id="cj-empty" type="checkbox" checked /> Skip empty lines</label>
+  </section>
+
+  <section class="cj-box">
+    <div class="cj-top">
+      <h2>3. JSON result</h2>
+      <div class="cj-top-actions">
+        <button id="cj-copy" class="btn" type="button" disabled>Copy</button>
+        <button id="cj-download" class="cj-secondary" type="button" disabled>Download .json</button>
+      </div>
+    </div>
+    <p id="cj-status" class="cj-status">Add some CSV above to see the result.</p>
+    <ul id="cj-errors" class="cj-errors"></ul>
+    <textarea id="cj-out" class="cj-text" rows="14" spellcheck="false" readonly></textarea>
+  </section>
+
+  <section class="cj-content">
+    <h2>How to convert CSV to JSON</h2>
+    <ol>
+      <li>Paste your CSV into the first box, or click <strong>Choose CSV file</strong>.</li>
+      <li>Pick the delimiter (or leave it on auto-detect) and decide if the first row holds column names.</li>
+      <li>The JSON appears instantly in the result box.</li>
+      <li>Click <strong>Copy</strong> or <strong>Download .json</strong>.</li>
+    </ol>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Is my data uploaded anywhere?</h3>
+    <p>No. The conversion runs entirely in your browser. Nothing is sent to a server.</p>
+    <h3>What does "first row is the header" do?</h3>
+    <p>When it is on, the first row becomes the keys, and every other row becomes an object, like {"name": "Asha", "age": 29}. When it is off, you get a list of lists instead.</p>
+    <h3>Why are my numbers in quotes?</h3>
+    <p>Turn on "Convert numbers and true/false to real JSON types". With it off, every value stays as text.</p>
+    <h3>Can it handle semicolon or tab separated files?</h3>
+    <p>Yes. Leave the delimiter on auto-detect, or choose semicolon, tab, or pipe yourself.</p>
+    <h3>How large a file can I convert?</h3>
+    <p>There is no fixed limit, but very large files (hundreds of thousands of rows) may be slow because everything is processed on your device.</p>
+  </section>
+</ToolLayout>
+
+<style is:global>
+  .cj-intro { color: var(--muted); max-width: 720px; }
+  .cj-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px; margin: 20px 0;
+  }
+  .cj-box h2 { margin: 0 0 12px; font-size: 1.15rem; }
+  .cj-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .cj-top h2 { margin: 0; }
+  .cj-top-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cj-text {
+    width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.9rem;
+    background: #fff; color: var(--text); resize: vertical; white-space: pre; overflow: auto;
+  }
+  .cj-grid { display: grid; gap: 12px; margin-bottom: 8px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .cj-box label { display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; font-weight: 600; }
+  .cj-box select {
+    padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 1rem; background: #fff; color: var(--text); width: 100%;
+  }
+  .cj-box label.cj-check { flex-direction: row; align-items: center; gap: 8px; font-weight: 400; margin: 8px 0; }
+  .cj-secondary {
+    background: #fff; border: 1px solid var(--border); border-radius: 8px;
+    padding: 9px 14px; font-size: 0.95rem; cursor: pointer; color: var(--text);
+  }
+  .cj-secondary:hover:not(:disabled) { border-color: var(--accent); }
+  .cj-box button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .cj-status { margin: 0 0 8px; font-weight: 600; }
+  .cj-status.cj-bad { color: #c62828; }
+  .cj-errors { margin: 0 0 8px; padding-left: 20px; color: #c62828; font-size: 0.9rem; }
+  .cj-errors:empty { display: none; }
+  .cj-content { margin-top: 36px; max-width: 760px; }
+  .cj-content h2 { margin-top: 28px; }
+  .cj-content h3 { margin: 18px 0 4px; font-size: 1rem; }
+  .cj-content p { margin: 0 0 8px; }
+</style>
+
+<script>
+  import Papa from "papaparse";
+
+  const $ = (id) => document.getElementById(id);
+  const input = $("cj-in");
+  const output = $("cj-out");
+  const status = $("cj-status");
+  const errorsList = $("cj-errors");
+  let fileName = "data";
+  let timer;
+
+  const SAMPLE = "name,age,city,active\nAsha,29,Pune,true\nRavi,34,Mumbai,false\nMeera,41,Nashik,true";
+
+  function indentValue() {
+    const v = $("cj-indent").value;
+    if (v === "tab") return "\t";
+    return Number(v);
+  }
+
+  function convert() {
+    const text = input.value;
+    errorsList.innerHTML = "";
+    status.classList.remove("cj-bad");
+
+    if (!text.trim()) {
+      output.value = "";
+      status.textContent = "Add some CSV above to see the result.";
+      $("cj-copy").disabled = true;
+      $("cj-download").disabled = true;
+      return;
+    }
+
+    const trim = $("cj-trim").checked;
+    const result = Papa.parse(text, {
+      header: $("cj-header").checked,
+      delimiter: $("cj-delim").value === "auto" ? "" : $("cj-delim").value,
+      dynamicTyping: $("cj-types").checked,
+      skipEmptyLines: $("cj-empty").checked ? "greedy" : false,
+      transformHeader: (h) => h.trim(),
+      transform: (v) => (trim ? v.trim() : v),
+    });
+
+    const problems = result.errors.filter((e) => e.code !== "UndetectableDelimiter");
+    problems.slice(0, 5).forEach((e) => {
+      const li = document.createElement("li");
+      li.textContent = (typeof e.row === "number" ? "Row " + (e.row + 1) + ": " : "") + e.message;
+      errorsList.appendChild(li);
+    });
+    if (problems.length > 5) {
+      const li = document.createElement("li");
+      li.textContent = "...and " + (problems.length - 5) + " more warnings.";
+      errorsList.appendChild(li);
+    }
+
+    try {
+      output.value = JSON.stringify(result.data, null, indentValue());
+    } catch (err) {
+      output.value = "";
+      status.textContent = "Could not create JSON: " + err.message;
+      status.classList.add("cj-bad");
+      $("cj-copy").disabled = true;
+      $("cj-download").disabled = true;
+      return;
+    }
+
+    const count = result.data.length;
+    status.textContent = count + (count === 1 ? " row" : " rows") + " converted.";
+    $("cj-copy").disabled = count === 0;
+    $("cj-download").disabled = count === 0;
+  }
+
+  function schedule() {
+    clearTimeout(timer);
+    timer = setTimeout(convert, 250);
+  }
+
+  input.addEventListener("input", schedule);
+  ["cj-delim", "cj-indent", "cj-header", "cj-types", "cj-trim", "cj-empty"].forEach((id) =>
+    $(id).addEventListener("change", convert)
+  );
+
+  // file picker
+  $("cj-pick").addEventListener("click", () => $("cj-file").click());
+  $("cj-file").addEventListener("change", async (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    fileName = f.name.replace(/\.[^.]+$/, "") || "data";
+    input.value = await f.text();
+    e.target.value = "";
+    convert();
+  });
+
+  // drag and drop a file onto the text box
+  input.addEventListener("dragover", (e) => e.preventDefault());
+  input.addEventListener("drop", async (e) => {
+    e.preventDefault();
+    const f = e.dataTransfer.files[0];
+    if (!f) return;
+    fileName = f.name.replace(/\.[^.]+$/, "") || "data";
+    input.value = await f.text();
+    convert();
+  });
+
+  $("cj-sample").addEventListener("click", () => {
+    fileName = "sample";
+    input.value = SAMPLE;
+    convert();
+  });
+
+  $("cj-clear").addEventListener("click", () => {
+    input.value = "";
+    fileName = "data";
+    convert();
+  });
+
+  // copy
+  $("cj-copy").addEventListener("click", async () => {
+    const btn = $("cj-copy");
+    try {
+      await navigator.clipboard.writeText(output.value);
+    } catch {
+      output.removeAttribute("readonly");
+      output.select();
+      document.execCommand("copy");
+      output.setAttribute("readonly", "");
+    }
+    btn.textContent = "Copied!";
+    setTimeout(() => (btn.textContent = "Copy"), 1500);
+  });
+
+  // download
+  $("cj-download").addEventListener("click", () => {
+    const blob = new Blob([output.value], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName + ".json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  });
+
+  convert();
+</script>
