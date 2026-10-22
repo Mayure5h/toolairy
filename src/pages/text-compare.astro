@@ -1,0 +1,585 @@
+---
+import ToolLayout from "../layouts/ToolLayout.astro";
+---
+<ToolLayout
+  title="Text Compare: Find Differences Between Two Texts Online"
+  description="Compare two texts and see added and removed words, lines, or characters. Side-by-side or inline view, copy or download the result. Free, private, and runs in your browser."
+>
+  <h1>Text Compare</h1>
+  <p class="tc-intro">
+    Paste two versions of a text and see exactly what changed. Removed text is shown in red and
+    added text in green. Your text never leaves your browser.
+  </p>
+
+  <section class="tc-box">
+    <div class="tc-top">
+      <h2>1. Add your texts</h2>
+      <div class="tc-actions">
+        <button id="tc-swap" class="tc-secondary" type="button">Swap A and B</button>
+        <button id="tc-sample" class="tc-secondary" type="button">Load sample text</button>
+        <button id="tc-clear" class="tc-secondary" type="button">Clear all</button>
+      </div>
+    </div>
+
+    <div class="tc-two">
+      <div>
+        <label class="tc-label" for="tc-a">Original Text (Text A)</label>
+        <textarea id="tc-a" class="tc-text" rows="10" spellcheck="false"
+          placeholder="Paste the original text here."></textarea>
+        <p id="tc-info-a" class="tc-info"></p>
+      </div>
+      <div>
+        <label class="tc-label" for="tc-b">Modified Text (Text B)</label>
+        <textarea id="tc-b" class="tc-text" rows="10" spellcheck="false"
+          placeholder="Paste the changed text here."></textarea>
+        <p id="tc-info-b" class="tc-info"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tc-box">
+    <h2>2. Options</h2>
+    <div class="tc-grid">
+      <label class="tc-field">Compare by
+        <select id="tc-mode">
+          <option value="words">Words</option>
+          <option value="lines">Lines</option>
+          <option value="chars">Characters</option>
+        </select>
+      </label>
+    </div>
+    <label class="tc-check"><input id="tc-case" type="checkbox" /> Ignore upper and lower case</label>
+    <label class="tc-check"><input id="tc-space" type="checkbox" /> Ignore differences in spaces and line breaks</label>
+  </section>
+
+  <section id="tc-results" class="tc-box tc-hidden">
+    <div class="tc-top">
+      <h2>3. Differences</h2>
+      <div class="tc-actions">
+        <div class="tc-seg" role="group" aria-label="View">
+          <button type="button" class="tc-segbtn tc-active" data-view="side" aria-pressed="true">Side by side</button>
+          <button type="button" class="tc-segbtn" data-view="unified" aria-pressed="false">Inline</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tc-cards" class="tc-cards" aria-live="polite"></div>
+
+    <div class="tc-export">
+      <button id="tc-copy" class="btn" type="button" disabled>Copy result</button>
+      <button id="tc-dl-txt" class="tc-secondary" type="button" disabled>Download .txt</button>
+      <button id="tc-dl-html" class="tc-secondary" type="button" disabled>Download .html</button>
+    </div>
+
+    <div id="tc-out" class="tc-out"></div>
+  </section>
+
+  <section class="tc-content">
+    <h2>How to compare two texts</h2>
+    <ol>
+      <li>Paste the original text into Text A and the changed text into Text B.</li>
+      <li>Choose whether to compare by words, lines, or characters.</li>
+      <li>Read the highlighted result. Red is removed and green is added.</li>
+      <li>Switch between side by side and inline view, then copy or download the result.</li>
+    </ol>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Is my text uploaded anywhere?</h3>
+    <p>No. The comparison runs entirely in your browser. Nothing is sent to a server.</p>
+    <h3>Which comparison mode should I use?</h3>
+    <p>Use words for articles and documents, lines for code, lists, and configuration files, and characters when you need to spot tiny changes such as a single typo.</p>
+    <h3>Can I compare code?</h3>
+    <p>Yes. Choose Lines mode. Changed lines are paired side by side, and the exact words that changed inside a line are highlighted more strongly.</p>
+    <h3>What do the ignore options do?</h3>
+    <p>Ignoring case treats "Hello" and "hello" as the same. Ignoring spaces and line breaks stops extra spaces, tabs, or different line wrapping from counting as changes.</p>
+    <h3>How do I save the result?</h3>
+    <p>Use Copy result for a plain text version, or download it as a text file or as an HTML page that keeps the red and green highlighting.</p>
+    <h3>Is there a size limit?</h3>
+    <p>Up to 300,000 characters in total. Character mode is limited to 40,000 characters because it needs much more work from your device.</p>
+  </section>
+</ToolLayout>
+
+<style is:global>
+  .tc-intro { color: var(--muted); max-width: 720px; }
+  .tc-hidden { display: none !important; }
+
+  /* panels in this tool's color */
+  main .tc-box {
+    background: var(--card); border: 1px solid var(--border); border-top: 5px solid var(--accent);
+    border-radius: 14px; padding: 18px; margin: 20px 0;
+    box-shadow: 0 1px 2px rgba(20, 33, 61, 0.04), 0 14px 28px -18px rgba(20, 33, 61, 0.22);
+  }
+  main .tc-box h2 { margin: 0 0 12px; font-size: 1.15rem; font-family: var(--font-display); color: var(--ink); }
+  main .tc-content {
+    background: #fff; border: 1px solid var(--border); border-radius: 14px;
+    padding: 6px 26px 22px; max-width: 820px; margin-top: 36px;
+  }
+  main .tc-content h2 { font-family: var(--font-display); color: var(--accent); margin-top: 22px; }
+  main .tc-content h3 { margin: 18px 0 4px; font-size: 1rem; color: var(--ink); }
+  main .tc-content p { margin: 0 0 8px; }
+
+  .tc-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .tc-top h2 { margin: 0 !important; }
+  .tc-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  .tc-two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .tc-two { grid-template-columns: 1fr; } }
+  .tc-label { display: block; font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }
+  .tc-text {
+    width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.9rem;
+    background: #fff; color: var(--text); resize: vertical; line-height: 1.5;
+  }
+  .tc-info { margin: 6px 0 0; font-size: 0.85rem; color: var(--muted); min-height: 1.2em; }
+
+  .tc-grid { display: grid; gap: 12px; margin-bottom: 8px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .tc-field { display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; font-weight: 600; }
+  .tc-field select {
+    padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 1rem; background: #fff; color: var(--text); width: 100%;
+  }
+  .tc-check { display: flex; align-items: center; gap: 8px; margin: 8px 0; font-size: 0.95rem; }
+  .tc-check input:disabled + * , .tc-check:has(input:disabled) { opacity: 0.5; }
+
+  .tc-secondary {
+    background: #fff; border: 1px solid var(--border); border-radius: 8px;
+    padding: 9px 14px; font-size: 0.95rem; cursor: pointer; color: var(--text); font-family: inherit;
+  }
+  .tc-secondary:hover:not(:disabled) { border-color: var(--accent); }
+  .tc-box button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .tc-seg { display: inline-flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .tc-segbtn {
+    background: #fff; border: 0; padding: 9px 14px; font-size: 0.95rem; cursor: pointer;
+    color: var(--text); font-family: inherit; font-weight: 600;
+  }
+  .tc-segbtn + .tc-segbtn { border-left: 1px solid var(--border); }
+  .tc-segbtn.tc-active { background: var(--accent); color: #fff; }
+
+  .tc-cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); margin-bottom: 14px; }
+  .tc-stat { border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: var(--bg); }
+  .tc-stat b { display: block; font-size: 1.5rem; line-height: 1.2; font-family: var(--font-display); }
+  .tc-stat span { color: var(--muted); font-size: 0.85rem; }
+  .tc-stat.tc-s-add { background: #e6ffed; border-color: #b7ebc6; }
+  .tc-stat.tc-s-add b { color: #166534; }
+  .tc-stat.tc-s-del { background: #ffeef0; border-color: #f5c2c9; }
+  .tc-stat.tc-s-del b { color: #991b1b; }
+
+  .tc-export { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+
+  .tc-msg { margin: 0; padding: 16px; font-weight: 600; background: var(--bg); border-radius: 10px; }
+  .tc-same { margin: 0; padding: 16px; font-weight: 600; background: #e6ffed; color: #166534; border-radius: 10px; }
+  .tc-note { margin: 8px 0 0; color: var(--muted); font-size: 0.85rem; }
+
+  /* diff colors */
+  .tc-del { background: #ffeef0; }
+  .tc-add { background: #e6ffed; }
+  .tc-empty { background: #f1f3f8; }
+  del.tc-del { color: #86181d; text-decoration: line-through; text-decoration-color: #e07a85; box-shadow: inset 0 -2px 0 #f5a3ad; }
+  ins.tc-add { color: #14532d; text-decoration: none; box-shadow: inset 0 -2px 0 #8fdca6; }
+  mark.tc-m-del { background: #fdb8c0; color: inherit; border-radius: 3px; }
+  mark.tc-m-add { background: #acf2bd; color: inherit; border-radius: 3px; }
+
+  /* side by side: lines */
+  .tc-tablewrap { overflow-x: auto; max-height: 560px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
+  .tc-table { border-collapse: collapse; width: 100%; min-width: 640px; table-layout: fixed; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.88rem; }
+  .tc-table td { padding: 2px 8px; vertical-align: top; white-space: pre-wrap; word-break: break-word; border-bottom: 1px solid #eef1f7; }
+  .tc-table td.tc-n { color: var(--muted); text-align: right; user-select: none; background: var(--bg); padding-right: 8px; }
+
+  /* side by side: words and characters */
+  .tc-panes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 700px) { .tc-panes { grid-template-columns: 1fr; } }
+  .tc-pane { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .tc-pane-h { margin: 0; padding: 8px 12px; background: var(--bg); font-weight: 700; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
+  .tc-pane-b {
+    padding: 12px; white-space: pre-wrap; word-break: break-word; max-height: 520px; overflow: auto;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.9rem; line-height: 1.6;
+  }
+
+  /* inline view */
+  .tc-inline {
+    padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: #fff;
+    white-space: pre-wrap; word-break: break-word; max-height: 560px; overflow: auto;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.9rem; line-height: 1.6;
+  }
+  .tc-ulines { border: 1px solid var(--border); border-radius: 8px; max-height: 560px; overflow: auto; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.88rem; }
+  .tc-urow { display: grid; grid-template-columns: 28px 1fr; white-space: pre-wrap; word-break: break-word; }
+  .tc-urow .tc-sign { text-align: center; color: var(--muted); user-select: none; }
+  .tc-urow.tc-del .tc-sign { color: #991b1b; }
+  .tc-urow.tc-add .tc-sign { color: #166534; }
+</style>
+
+<script>
+  import { diffWords, diffWordsWithSpace, diffLines, diffChars } from "diff";
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) =>
+    String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+  const MAX_TOTAL = 300000;
+  const MAX_CHARS_MODE = 40000;
+  const MAX_ROWS = 3000;
+
+  const state = { view: "side", parts: null, mode: "words", summary: "" };
+  let timer;
+
+  const SAMPLE_A =
+    "The quick brown fox jumps over the lazy dog.\n" +
+    "Toolairy offers free tools for everyday file tasks.\n" +
+    "All processing happens in your browser.\n" +
+    "This line will be removed.";
+  const SAMPLE_B =
+    "The quick brown fox leaps over the lazy dog.\n" +
+    "Toolairy offers free online tools for everyday file tasks.\n" +
+    "All processing happens in your browser.\n" +
+    "This line was added later.";
+
+  // ---------- small helpers ----------
+  const normalize = (t) => t.replace(/\r\n?/g, "\n");
+  const countWords = (t) => (t.match(/\S+/g) || []).length;
+  const countLines = (t) => (t ? t.split("\n").length : 0);
+
+  // Split a diff part into lines (drops the empty piece after a trailing newline)
+  function toLines(value) {
+    const lines = value.split("\n");
+    if (lines.length && lines[lines.length - 1] === "") lines.pop();
+    return lines;
+  }
+
+  function countUnits(value, mode) {
+    if (mode === "chars") return value.length;
+    if (mode === "lines") return toLines(value).length;
+    return countWords(value);
+  }
+
+  // ---------- the diff ----------
+  function runDiff(a, b, mode, ignoreCase, ignoreSpace) {
+    const base = { ignoreCase };
+    if (mode === "lines") return diffLines(a, b, { ...base, ignoreWhitespace: ignoreSpace });
+    if (mode === "chars") return diffChars(a, b, base);
+    return ignoreSpace ? diffWords(a, b, base) : diffWordsWithSpace(a, b, base);
+  }
+
+  // Highlight the exact words that changed inside one pair of lines
+  function intra(lineA, lineB, ignoreCase) {
+    const parts = diffWordsWithSpace(lineA, lineB, { ignoreCase });
+    let a = "";
+    let b = "";
+    parts.forEach((p) => {
+      if (p.added) b += '<mark class="tc-m-add">' + esc(p.value) + "</mark>";
+      else if (p.removed) a += '<mark class="tc-m-del">' + esc(p.value) + "</mark>";
+      else {
+        a += esc(p.value);
+        b += esc(p.value);
+      }
+    });
+    return { a, b };
+  }
+
+  // Turn line-mode diff parts into aligned rows for the side-by-side table
+  function buildRows(parts) {
+    const rows = [];
+    let la = 0;
+    let lb = 0;
+    for (let i = 0; i < parts.length; i++) {
+      const p = parts[i];
+      if (!p.added && !p.removed) {
+        toLines(p.value).forEach((t) => rows.push({ same: true, l: { n: ++la, t }, r: { n: ++lb, t } }));
+      } else if (p.removed) {
+        const rem = toLines(p.value);
+        let add = [];
+        if (parts[i + 1] && parts[i + 1].added) {
+          add = toLines(parts[i + 1].value);
+          i++;
+        }
+        const m = Math.max(rem.length, add.length);
+        for (let k = 0; k < m; k++) {
+          rows.push({
+            same: false,
+            l: k < rem.length ? { n: ++la, t: rem[k] } : null,
+            r: k < add.length ? { n: ++lb, t: add[k] } : null,
+          });
+        }
+      } else {
+        toLines(p.value).forEach((t) => rows.push({ same: false, l: null, r: { n: ++lb, t } }));
+      }
+    }
+    return rows;
+  }
+
+  // ---------- rendering the views ----------
+  function sideLinesHtml(parts, ignoreCase) {
+    let rows = buildRows(parts);
+    let note = "";
+    if (rows.length > MAX_ROWS) {
+      note = '<p class="tc-note">Showing the first ' + MAX_ROWS + " of " + rows.length + " rows. Download the result to get everything.</p>";
+      rows = rows.slice(0, MAX_ROWS);
+    }
+    const body = rows
+      .map((r) => {
+        let lh = r.l ? esc(r.l.t) : "";
+        let rh = r.r ? esc(r.r.t) : "";
+        if (!r.same && r.l && r.r) {
+          const h = intra(r.l.t, r.r.t, ignoreCase);
+          lh = h.a;
+          rh = h.b;
+        }
+        const lc = r.same ? "" : r.l ? "tc-del" : "tc-empty";
+        const rc = r.same ? "" : r.r ? "tc-add" : "tc-empty";
+        return (
+          "<tr>" +
+          '<td class="tc-n">' + (r.l ? r.l.n : "") + "</td>" +
+          '<td class="' + lc + '">' + (lh || "&nbsp;") + "</td>" +
+          '<td class="tc-n">' + (r.r ? r.r.n : "") + "</td>" +
+          '<td class="' + rc + '">' + (rh || "&nbsp;") + "</td>" +
+          "</tr>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="tc-tablewrap"><table class="tc-table"><colgroup>' +
+      '<col style="width:48px"><col><col style="width:48px"><col></colgroup><tbody>' +
+      body + "</tbody></table></div>" + note
+    );
+  }
+
+  function sidePanesHtml(parts) {
+    let left = "";
+    let right = "";
+    parts.forEach((p) => {
+      if (p.added) right += '<ins class="tc-add">' + esc(p.value) + "</ins>";
+      else if (p.removed) left += '<del class="tc-del">' + esc(p.value) + "</del>";
+      else {
+        left += esc(p.value);
+        right += esc(p.value);
+      }
+    });
+    return (
+      '<div class="tc-panes">' +
+      '<div class="tc-pane"><p class="tc-pane-h">Text A (original)</p><div class="tc-pane-b">' + left + "</div></div>" +
+      '<div class="tc-pane"><p class="tc-pane-h">Text B (modified)</p><div class="tc-pane-b">' + right + "</div></div>" +
+      "</div>"
+    );
+  }
+
+  function unifiedHtml(parts, mode) {
+    if (mode === "lines") {
+      let count = 0;
+      let html = "";
+      let cut = false;
+      parts.forEach((p) => {
+        const cls = p.added ? "tc-add" : p.removed ? "tc-del" : "";
+        const sign = p.added ? "+" : p.removed ? "-" : "";
+        toLines(p.value).forEach((t) => {
+          if (count >= MAX_ROWS) { cut = true; return; }
+          count++;
+          html += '<div class="tc-urow ' + cls + '"><span class="tc-sign">' + sign + "</span><span>" + (esc(t) || "&nbsp;") + "</span></div>";
+        });
+      });
+      return '<div class="tc-ulines">' + html + "</div>" +
+        (cut ? '<p class="tc-note">Showing the first ' + MAX_ROWS + " lines. Download the result to get everything.</p>" : "");
+    }
+    let html = "";
+    parts.forEach((p) => {
+      if (p.added) html += '<ins class="tc-add">' + esc(p.value) + "</ins>";
+      else if (p.removed) html += '<del class="tc-del">' + esc(p.value) + "</del>";
+      else html += esc(p.value);
+    });
+    return '<div class="tc-inline">' + html + "</div>";
+  }
+
+  // ---------- export formats ----------
+  function plainText(parts, mode) {
+    if (mode === "lines") {
+      let out = [];
+      parts.forEach((p) => {
+        const sign = p.added ? "+ " : p.removed ? "- " : "  ";
+        toLines(p.value).forEach((t) => out.push(sign + t));
+      });
+      return out.join("\n");
+    }
+    // words and characters: [-removed-] and {+added+}
+    return parts
+      .map((p) => (p.added ? "{+" + p.value + "+}" : p.removed ? "[-" + p.value + "-]" : p.value))
+      .join("");
+  }
+
+  const EXPORT_CSS =
+    "body{font-family:system-ui,sans-serif;max-width:900px;margin:32px auto;padding:0 16px;line-height:1.6;color:#14213d}" +
+    ".tc-inline,.tc-ulines{font-family:ui-monospace,Consolas,monospace;font-size:14px;white-space:pre-wrap;word-break:break-word;border:1px solid #dde5f3;border-radius:8px;padding:12px}" +
+    ".tc-ulines{padding:0}.tc-urow{display:grid;grid-template-columns:28px 1fr;white-space:pre-wrap}.tc-sign{text-align:center;color:#55627d}" +
+    ".tc-del{background:#ffeef0}.tc-add{background:#e6ffed}del.tc-del{color:#86181d}ins.tc-add{color:#14532d;text-decoration:none}";
+
+  function exportHtml() {
+    return (
+      '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Text comparison</title><style>' +
+      EXPORT_CSS + "</style></head><body><h1>Text comparison</h1><p>" + esc(state.summary) + "</p>" +
+      unifiedHtml(state.parts, state.mode) + "</body></html>"
+    );
+  }
+
+  function download(name, text, type) {
+    const blob = new Blob([text], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }
+
+  // ---------- main update ----------
+  function setExportEnabled(on) {
+    ["tc-copy", "tc-dl-txt", "tc-dl-html"].forEach((id) => ($(id).disabled = !on));
+  }
+
+  function updateInfo() {
+    ["a", "b"].forEach((s) => {
+      const t = normalize($("tc-" + s).value);
+      $("tc-info-" + s).textContent = t
+        ? t.length.toLocaleString() + " characters, " + countWords(t).toLocaleString() + " words, " + countLines(t).toLocaleString() + " lines"
+        : "";
+    });
+  }
+
+  function showMessage(text) {
+    $("tc-out").innerHTML = '<p class="tc-msg">' + esc(text) + "</p>";
+    $("tc-cards").innerHTML = "";
+    state.parts = null;
+    setExportEnabled(false);
+  }
+
+  function renderView() {
+    if (!state.parts) return;
+    const changed = state.parts.some((p) => p.added || p.removed);
+    if (!changed) {
+      $("tc-out").innerHTML = '<p class="tc-same">No differences found with the current options.</p>';
+      return;
+    }
+    const ic = $("tc-case").checked;
+    let html;
+    if (state.view === "unified") html = unifiedHtml(state.parts, state.mode);
+    else if (state.mode === "lines") html = sideLinesHtml(state.parts, ic);
+    else html = sidePanesHtml(state.parts);
+    $("tc-out").innerHTML = html;
+  }
+
+  function update() {
+    updateInfo();
+    const a = normalize($("tc-a").value);
+    const b = normalize($("tc-b").value);
+    const results = $("tc-results");
+
+    if (!a && !b) {
+      results.classList.add("tc-hidden");
+      state.parts = null;
+      return;
+    }
+    results.classList.remove("tc-hidden");
+
+    const mode = $("tc-mode").value;
+    $("tc-space").disabled = mode === "chars";
+
+    if (a.length + b.length > MAX_TOTAL) {
+      showMessage("The texts are too long (limit " + MAX_TOTAL.toLocaleString() + " characters in total).");
+      return;
+    }
+    if (mode === "chars" && a.length + b.length > MAX_CHARS_MODE) {
+      showMessage("Character mode is limited to " + MAX_CHARS_MODE.toLocaleString() + " characters in total. Switch to Words or Lines for longer texts.");
+      return;
+    }
+
+    const parts = runDiff(a, b, mode, $("tc-case").checked, $("tc-space").checked && mode !== "chars");
+
+    let added = 0;
+    let removed = 0;
+    parts.forEach((p) => {
+      if (p.added) added += countUnits(p.value, mode);
+      else if (p.removed) removed += countUnits(p.value, mode);
+    });
+    const unit = mode === "chars" ? "characters" : mode;
+
+    state.parts = parts;
+    state.mode = mode;
+    state.summary = "Compared by " + unit + ": " + added + " added, " + removed + " removed.";
+
+    $("tc-cards").innerHTML =
+      '<div class="tc-stat tc-s-add"><b>+' + added.toLocaleString() + "</b><span>Additions (" + unit + ")</span></div>" +
+      '<div class="tc-stat tc-s-del"><b>-' + removed.toLocaleString() + "</b><span>Deletions (" + unit + ")</span></div>" +
+      '<div class="tc-stat"><b>' + a.length.toLocaleString() + "</b><span>Text A characters, " + countWords(a).toLocaleString() + " words</span></div>" +
+      '<div class="tc-stat"><b>' + b.length.toLocaleString() + "</b><span>Text B characters, " + countWords(b).toLocaleString() + " words</span></div>";
+
+    setExportEnabled(true);
+    renderView();
+  }
+
+  function schedule() {
+    clearTimeout(timer);
+    timer = setTimeout(update, 250);
+  }
+
+  // ---------- events ----------
+  ["tc-a", "tc-b"].forEach((id) => $(id).addEventListener("input", schedule));
+  ["tc-mode", "tc-case", "tc-space"].forEach((id) => $(id).addEventListener("change", update));
+
+  document.querySelectorAll(".tc-segbtn").forEach((btn) =>
+    btn.addEventListener("click", () => {
+      state.view = btn.dataset.view;
+      document.querySelectorAll(".tc-segbtn").forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle("tc-active", on);
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      renderView();
+    })
+  );
+
+  $("tc-swap").addEventListener("click", () => {
+    const a = $("tc-a").value;
+    $("tc-a").value = $("tc-b").value;
+    $("tc-b").value = a;
+    update();
+  });
+
+  $("tc-sample").addEventListener("click", () => {
+    $("tc-a").value = SAMPLE_A;
+    $("tc-b").value = SAMPLE_B;
+    update();
+  });
+
+  $("tc-clear").addEventListener("click", () => {
+    $("tc-a").value = "";
+    $("tc-b").value = "";
+    update();
+  });
+
+  $("tc-copy").addEventListener("click", async () => {
+    if (!state.parts) return;
+    const btn = $("tc-copy");
+    const text = plainText(state.parts, state.mode);
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    btn.textContent = "Copied!";
+    setTimeout(() => (btn.textContent = "Copy result"), 1500);
+  });
+
+  $("tc-dl-txt").addEventListener("click", () => {
+    if (state.parts) download("text-differences.txt", plainText(state.parts, state.mode), "text/plain;charset=utf-8");
+  });
+
+  $("tc-dl-html").addEventListener("click", () => {
+    if (state.parts) download("text-differences.html", exportHtml(), "text/html;charset=utf-8");
+  });
+
+  update();
+</script>

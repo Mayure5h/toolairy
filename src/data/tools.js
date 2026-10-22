@@ -33,4 +33,12 @@ export const TOOLS = [
     glyph: "≠",
     desc: "Find added, removed, and changed rows between two CSV files.",
   },
+    {
+    name: "Text Compare",
+    short: "Text Compare",
+    href: "/text-compare",
+    color: "#0B7BB5",
+    glyph: "Δ",
+    desc: "Compare two texts and see added and removed words, lines, or characters.",
+  },
 ];
