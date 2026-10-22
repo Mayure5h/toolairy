@@ -3,7 +3,7 @@ import "@fontsource-variable/figtree";
 import "@fontsource-variable/bricolage-grotesque";
 import { TOOLS, BRAND } from "../data/tools.js";
 
-const { title, description } = Astro.props;
+const { title, description, wide = false } = Astro.props;
 const SITE_NAME = "Toolairy";
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
@@ -52,7 +52,7 @@ const accent = current ? current.color : BRAND;
       <div class="rainbow"></div>
     </header>
 
-    <main class="wrap">
+    <main class={wide ? "wrap-wide" : "wrap"}>
       <slot />
     </main>
 
@@ -109,6 +109,7 @@ const accent = current ? current.color : BRAND;
       var(--bg);
   }
   .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+  .wrap-wide { max-width: 1480px; margin: 0 auto; padding: 0 20px; }
   a { color: var(--accent); }
   :focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, white); outline-offset: 2px; }
 

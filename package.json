@@ -14,11 +14,13 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/caveat": "^5.3.0",
     "@fontsource-variable/figtree": "^5.3.0",
     "astro": "^7.4.1",
     "diff": "^9.0.0",
     "jszip": "^3.10.2",
     "papaparse": "^5.7.0",
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^4.10.38"
   }
 }
