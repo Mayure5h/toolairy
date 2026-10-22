@@ -1,0 +1,547 @@
+---
+import ToolLayout from "../layouts/ToolLayout.astro";
+---
+<ToolLayout
+  title="CSV Compare: Find Differences Between Two CSV Files Online"
+  description="Compare two CSV files and see added, removed, and changed rows. Match rows by key columns, then download a difference report. Free, private, and runs in your browser."
+>
+  <h1>CSV Compare</h1>
+  <p class="cc-intro">
+    Compare two CSV files and see which rows were added, removed, or changed. Pick the column
+    that identifies each row (like an ID), and the tool shows every difference. Your data
+    never leaves your browser.
+  </p>
+
+  <section class="cc-box">
+    <div class="cc-top">
+      <h2>1. Add your two CSV files</h2>
+      <div class="cc-actions">
+        <button id="cc-sample" class="cc-secondary" type="button">Load sample</button>
+        <button id="cc-clear" class="cc-secondary" type="button">Clear both</button>
+      </div>
+    </div>
+
+    <div class="cc-two">
+      <div class="cc-side">
+        <div class="cc-sidehead">
+          <strong>File A (original)</strong>
+          <button id="cc-pick-a" class="cc-secondary" type="button">Choose file</button>
+          <input id="cc-file-a" type="file" accept=".csv,.tsv,.txt,text/csv,text/plain" hidden />
+        </div>
+        <textarea id="cc-a" class="cc-text" rows="9" spellcheck="false"
+          placeholder="Paste CSV for file A, or choose a file. The first row must be the header."></textarea>
+        <p id="cc-info-a" class="cc-info"></p>
+      </div>
+      <div class="cc-side">
+        <div class="cc-sidehead">
+          <strong>File B (new)</strong>
+          <button id="cc-pick-b" class="cc-secondary" type="button">Choose file</button>
+          <input id="cc-file-b" type="file" accept=".csv,.tsv,.txt,text/csv,text/plain" hidden />
+        </div>
+        <textarea id="cc-b" class="cc-text" rows="9" spellcheck="false"
+          placeholder="Paste CSV for file B, or choose a file. The first row must be the header."></textarea>
+        <p id="cc-info-b" class="cc-info"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cc-box">
+    <h2>2. Options</h2>
+    <div class="cc-grid">
+      <label>Delimiter
+        <select id="cc-delim">
+          <option value="auto">Auto-detect</option>
+          <option value=",">Comma ( , )</option>
+          <option value=";">Semicolon ( ; )</option>
+          <option value="&#9;">Tab</option>
+          <option value="|">Pipe ( | )</option>
+        </select>
+      </label>
+    </div>
+
+    <p class="cc-label">Key columns (they identify the same row in both files)</p>
+    <div id="cc-keys" class="cc-keys"><span class="cc-muted">Add both CSV files to see the matching columns.</span></div>
+
+    <label class="cc-check"><input id="cc-bypos" type="checkbox" /> No key column: compare row 1 with row 1, row 2 with row 2, and so on</label>
+    <label class="cc-check"><input id="cc-trim" type="checkbox" checked /> Ignore spaces around values</label>
+    <label class="cc-check"><input id="cc-case" type="checkbox" /> Ignore upper and lower case</label>
+
+    <div class="cc-run">
+      <button id="cc-compare" class="btn" type="button">Compare</button>
+    </div>
+    <p id="cc-msg" class="cc-msg"></p>
+  </section>
+
+  <section id="cc-results" class="cc-box cc-hidden">
+    <div class="cc-top">
+      <h2>3. Results</h2>
+      <div class="cc-actions">
+        <button id="cc-download" class="cc-secondary" type="button">Download report (CSV)</button>
+      </div>
+    </div>
+    <div id="cc-cards" class="cc-cards"></div>
+    <p id="cc-notes" class="cc-notes"></p>
+    <div id="cc-tabs" class="cc-tabs"></div>
+    <p id="cc-limit" class="cc-limit"></p>
+    <div id="cc-table" class="cc-tablewrap"></div>
+  </section>
+
+  <section class="cc-content">
+    <h2>How to compare two CSV files</h2>
+    <ol>
+      <li>Paste or choose your original CSV in File A and your updated CSV in File B.</li>
+      <li>Tick the key column (or columns) that identify each row, such as an ID or email.</li>
+      <li>Click <strong>Compare</strong>.</li>
+      <li>Open the Changed, Removed, and Added tabs, or download the full report.</li>
+    </ol>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Are my files uploaded anywhere?</h3>
+    <p>No. The comparison runs entirely in your browser. Nothing is sent to a server.</p>
+    <h3>What is a key column?</h3>
+    <p>A key column holds a value that is unique for each row, like an employee ID. The tool uses it to match a row in File A with the same row in File B, even if the rows are in a different order.</p>
+    <h3>What if I have no unique column?</h3>
+    <p>Tick the option to compare by row position, or tick several key columns together (for example first name and last name) so the combination is unique.</p>
+    <h3>What do Added, Removed, and Changed mean?</h3>
+    <p>Removed rows exist only in File A. Added rows exist only in File B. Changed rows exist in both files but have different values in one or more columns.</p>
+    <h3>What if the files have different columns?</h3>
+    <p>Only columns that exist in both files are compared. The tool tells you which columns appear in only one file.</p>
+    <h3>What if a key appears more than once?</h3>
+    <p>Duplicate keys are matched in order: the first match in A is compared with the first match in B, the second with the second, and so on. The tool shows a warning so you can check your key choice.</p>
+    <h3>Is there a size limit?</h3>
+    <p>There is no fixed limit, but very large files (hundreds of thousands of rows) may be slow because everything is processed on your device. The screen shows the first 500 rows of each list, and the downloaded report contains all differences.</p>
+  </section>
+</ToolLayout>
+
+<style is:global>
+  .cc-intro { color: var(--muted); max-width: 720px; }
+  .cc-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px; margin: 20px 0;
+  }
+  .cc-box h2 { margin: 0 0 12px; font-size: 1.15rem; }
+  .cc-hidden { display: none !important; }
+  .cc-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .cc-top h2 { margin: 0; }
+  .cc-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cc-two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .cc-two { grid-template-columns: 1fr; } }
+  .cc-sidehead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
+  .cc-text {
+    width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.85rem;
+    background: #fff; color: var(--text); resize: vertical; white-space: pre; overflow: auto;
+  }
+  .cc-info { margin: 6px 0 0; font-size: 0.85rem; color: var(--muted); min-height: 1.2em; }
+  .cc-info.cc-bad { color: #c62828; }
+  .cc-grid { display: grid; gap: 12px; margin-bottom: 8px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .cc-box label { display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; font-weight: 600; }
+  .cc-box select {
+    padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 1rem; background: #fff; color: var(--text); width: 100%;
+  }
+  .cc-box label.cc-check { flex-direction: row; align-items: center; gap: 8px; font-weight: 400; margin: 8px 0; }
+  .cc-label { margin: 14px 0 6px; font-size: 0.9rem; font-weight: 600; }
+  .cc-keys { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .cc-box .cc-keys label.cc-key {
+    flex-direction: row; align-items: center; gap: 6px; font-weight: 400;
+    border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; background: #fff;
+  }
+  .cc-muted { color: var(--muted); font-size: 0.9rem; }
+  .cc-run { margin-top: 12px; }
+  .cc-msg { margin: 10px 0 0; color: #c62828; font-size: 0.9rem; }
+  .cc-msg:empty { display: none; }
+  .cc-secondary {
+    background: #fff; border: 1px solid var(--border); border-radius: 8px;
+    padding: 9px 14px; font-size: 0.95rem; cursor: pointer; color: var(--text);
+  }
+  .cc-secondary:hover:not(:disabled) { border-color: var(--accent); }
+  .cc-cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); margin-bottom: 12px; }
+  .cc-stat { border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: var(--bg); }
+  .cc-stat b { display: block; font-size: 1.5rem; line-height: 1.2; }
+  .cc-stat span { color: var(--muted); font-size: 0.85rem; }
+  .cc-notes { margin: 0 0 12px; color: var(--muted); font-size: 0.9rem; }
+  .cc-notes:empty { display: none; }
+  .cc-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .cc-tab {
+    background: #fff; border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 14px; font-size: 0.95rem; cursor: pointer; color: var(--text);
+  }
+  .cc-tab.cc-active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .cc-limit { margin: 0 0 8px; color: var(--muted); font-size: 0.85rem; }
+  .cc-limit:empty { display: none; }
+  .cc-tablewrap { overflow: auto; max-height: 460px; border: 1px solid var(--border); border-radius: 8px; }
+  .cc-t { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  .cc-t th, .cc-t td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .cc-t th { background: var(--bg); position: sticky; top: 0; }
+  .cc-t td.cc-old { background: #fdecea; }
+  .cc-t td.cc-new { background: #e8f5e9; }
+  .cc-empty { color: var(--muted); font-style: italic; }
+  .cc-same { padding: 16px; font-weight: 600; }
+  .cc-content { margin-top: 36px; max-width: 760px; }
+  .cc-content h2 { margin-top: 28px; }
+  .cc-content h3 { margin: 18px 0 4px; font-size: 1rem; }
+  .cc-content p { margin: 0 0 8px; }
+</style>
+
+<script>
+  import Papa from "papaparse";
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) =>
+    String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+  const LIMIT = 500;
+  const SEP = "\u241F";
+  const state = { A: null, B: null, result: null, tab: "changed" };
+  let timer;
+
+  const SAMPLE_A =
+    "id,name,city,salary\n1,Asha,Pune,50000\n2,Ravi,Mumbai,62000\n3,Meera,Nashik,58000\n4,Kiran,Nagpur,45000";
+  const SAMPLE_B =
+    "id,name,city,salary\n1,Asha,Pune,52000\n2,Ravi,Thane,62000\n4,Kiran,Nagpur,45000\n5,Sneha,Pune,49000";
+
+  // ---------- parsing ----------
+  function parseSide(side) {
+    const text = $("cc-" + side.toLowerCase()).value;
+    const info = $("cc-info-" + side.toLowerCase());
+    info.classList.remove("cc-bad");
+
+    if (!text.trim()) {
+      state[side] = null;
+      info.textContent = "";
+      return;
+    }
+    const d = $("cc-delim").value;
+    const r = Papa.parse(text, {
+      header: true,
+      skipEmptyLines: "greedy",
+      delimiter: d === "auto" ? "" : d,
+      transformHeader: (h) => h.trim(),
+    });
+    const headers = r.meta.fields || [];
+    state[side] = { headers, rows: r.data };
+
+    if (headers.length === 0 || r.data.length === 0) {
+      info.textContent = "No data rows found. Check that the first row is a header.";
+      info.classList.add("cc-bad");
+      return;
+    }
+    info.textContent = r.data.length + " rows, " + headers.length + " columns";
+  }
+
+  function commonHeaders() {
+    if (!state.A || !state.B) return [];
+    const setB = new Set(state.B.headers);
+    return state.A.headers.filter((h) => setB.has(h));
+  }
+
+  function renderKeys() {
+    const box = $("cc-keys");
+    const common = commonHeaders();
+    if (common.length === 0) {
+      box.innerHTML = '<span class="cc-muted">Add both CSV files with at least one matching column name.</span>';
+      return;
+    }
+    const prev = new Set(Array.from(document.querySelectorAll("#cc-keys input:checked")).map((x) => x.value));
+    let selected = common.filter((h) => prev.has(h));
+    if (selected.length === 0) selected = [common[0]];
+
+    box.innerHTML = common
+      .map(
+        (h) =>
+          `<label class="cc-key"><input type="checkbox" value="${esc(h)}" ${selected.includes(h) ? "checked" : ""} /> ${esc(h)}</label>`
+      )
+      .join("");
+  }
+
+  function refresh() {
+    parseSide("A");
+    parseSide("B");
+    renderKeys();
+  }
+
+  function schedule() {
+    clearTimeout(timer);
+    timer = setTimeout(refresh, 300);
+  }
+
+  // ---------- comparing ----------
+  function compare() {
+    const msg = $("cc-msg");
+    msg.textContent = "";
+    refresh();
+
+    const A = state.A;
+    const B = state.B;
+    if (!A || !B || A.rows.length === 0 || B.rows.length === 0) {
+      msg.textContent = "Please add data to both File A and File B.";
+      return;
+    }
+    const common = commonHeaders();
+    if (common.length === 0) {
+      msg.textContent = "The two files have no column names in common, so they cannot be compared.";
+      return;
+    }
+
+    const byPos = $("cc-bypos").checked;
+    const keyCols = Array.from(document.querySelectorAll("#cc-keys input:checked")).map((x) => x.value);
+    if (!byPos && keyCols.length === 0) {
+      msg.textContent = "Tick at least one key column, or choose to compare by row position.";
+      return;
+    }
+
+    const trim = $("cc-trim").checked;
+    const ic = $("cc-case").checked;
+    const norm = (v) => {
+      let s = v == null ? "" : String(v);
+      if (trim) s = s.trim();
+      if (ic) s = s.toLowerCase();
+      return s;
+    };
+
+    const compareCols = byPos ? common : common.filter((c) => !keyCols.includes(c));
+    let dupCount = 0;
+
+    function indexRows(rows) {
+      const map = new Map();
+      const seen = new Map();
+      rows.forEach((row, i) => {
+        let k;
+        let label;
+        if (byPos) {
+          k = String(i + 1);
+          label = "Row " + (i + 1);
+        } else {
+          k = keyCols.map((c) => norm(row[c])).join(SEP);
+          label = keyCols.map((c) => String(row[c] == null ? "" : row[c]).trim()).join(" | ");
+        }
+        if (map.has(k)) {
+          const n = (seen.get(k) || 1) + 1;
+          seen.set(k, n);
+          dupCount++;
+          k = k + "\u241E" + n;
+          label = label + " (#" + n + ")";
+        }
+        map.set(k, { label, row });
+      });
+      return map;
+    }
+
+    const mapA = indexRows(A.rows);
+    const mapB = indexRows(B.rows);
+
+    const removed = [];
+    const added = [];
+    const changed = [];
+    let same = 0;
+
+    for (const [k, a] of mapA) {
+      const b = mapB.get(k);
+      if (!b) {
+        removed.push(a);
+        continue;
+      }
+      const diffs = [];
+      compareCols.forEach((c) => {
+        if (norm(a.row[c]) !== norm(b.row[c])) {
+          diffs.push({
+            col: c,
+            a: a.row[c] == null ? "" : String(a.row[c]),
+            b: b.row[c] == null ? "" : String(b.row[c]),
+          });
+        }
+      });
+      if (diffs.length) changed.push({ label: a.label, diffs });
+      else same++;
+    }
+    for (const [k, b] of mapB) {
+      if (!mapA.has(k)) added.push(b);
+    }
+
+    const setA = new Set(A.headers);
+    const setB = new Set(B.headers);
+    state.result = {
+      removed,
+      added,
+      changed,
+      same,
+      headersA: A.headers,
+      headersB: B.headers,
+      onlyA: A.headers.filter((h) => !setB.has(h)),
+      onlyB: B.headers.filter((h) => !setA.has(h)),
+      dupCount,
+      byPos,
+    };
+    state.tab = changed.length ? "changed" : removed.length ? "removed" : added.length ? "added" : "changed";
+    renderResult();
+    $("cc-results").classList.remove("cc-hidden");
+    $("cc-results").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // ---------- rendering ----------
+  function cell(v) {
+    return v === "" ? '<span class="cc-empty">(empty)</span>' : esc(v);
+  }
+
+  function renderResult() {
+    const r = state.result;
+    if (!r) return;
+
+    $("cc-cards").innerHTML = [
+      ["Changed rows", r.changed.length],
+      ["Removed rows (only in A)", r.removed.length],
+      ["Added rows (only in B)", r.added.length],
+      ["Identical rows", r.same],
+    ]
+      .map(([label, n]) => `<div class="cc-stat"><b>${n.toLocaleString()}</b><span>${label}</span></div>`)
+      .join("");
+
+    const notes = [];
+    if (r.onlyA.length) notes.push("Columns only in File A (not compared): " + r.onlyA.join(", ") + ".");
+    if (r.onlyB.length) notes.push("Columns only in File B (not compared): " + r.onlyB.join(", ") + ".");
+    if (r.dupCount > 0)
+      notes.push(
+        "Warning: " + r.dupCount + " duplicate key value(s) found. Duplicates were matched in order. Consider choosing more key columns."
+      );
+    $("cc-notes").textContent = notes.join(" ");
+
+    const tabs = [
+      ["changed", "Changed (" + r.changed.length + ")"],
+      ["removed", "Removed (" + r.removed.length + ")"],
+      ["added", "Added (" + r.added.length + ")"],
+    ];
+    $("cc-tabs").innerHTML = tabs
+      .map(([id, label]) => `<button type="button" class="cc-tab ${state.tab === id ? "cc-active" : ""}" data-tab="${id}">${label}</button>`)
+      .join("");
+
+    renderTable();
+  }
+
+  function renderTable() {
+    const r = state.result;
+    const box = $("cc-table");
+    const limit = $("cc-limit");
+    limit.textContent = "";
+
+    if (r.changed.length + r.removed.length + r.added.length === 0) {
+      box.innerHTML = '<p class="cc-same">The two files match. No differences found.</p>';
+      return;
+    }
+
+    if (state.tab === "changed") {
+      if (r.changed.length === 0) {
+        box.innerHTML = '<p class="cc-same">No changed rows.</p>';
+        return;
+      }
+      const flat = [];
+      for (const ch of r.changed) for (const d of ch.diffs) flat.push({ label: ch.label, d });
+      const shown = flat.slice(0, LIMIT);
+      if (flat.length > LIMIT) limit.textContent = "Showing the first " + LIMIT + " of " + flat.length + " changed cells. The downloaded report has all of them.";
+      box.innerHTML =
+        '<table class="cc-t"><thead><tr><th>' + (r.byPos ? "Row" : "Key") + "</th><th>Column</th><th>File A</th><th>File B</th></tr></thead><tbody>" +
+        shown
+          .map(
+            (x) =>
+              `<tr><td>${esc(x.label)}</td><td>${esc(x.d.col)}</td><td class="cc-old">${cell(x.d.a)}</td><td class="cc-new">${cell(x.d.b)}</td></tr>`
+          )
+          .join("") +
+        "</tbody></table>";
+      return;
+    }
+
+    const list = state.tab === "removed" ? r.removed : r.added;
+    const headers = state.tab === "removed" ? r.headersA : r.headersB;
+    if (list.length === 0) {
+      box.innerHTML = '<p class="cc-same">No ' + state.tab + " rows.</p>";
+      return;
+    }
+    const shown = list.slice(0, LIMIT);
+    if (list.length > LIMIT) limit.textContent = "Showing the first " + LIMIT + " of " + list.length + " rows. The downloaded report has all of them.";
+    box.innerHTML =
+      '<table class="cc-t"><thead><tr>' +
+      headers.map((h) => "<th>" + esc(h) + "</th>").join("") +
+      "</tr></thead><tbody>" +
+      shown
+        .map(
+          (x) =>
+            "<tr>" +
+            headers.map((h) => "<td>" + cell(x.row[h] == null ? "" : String(x.row[h])) + "</td>").join("") +
+            "</tr>"
+        )
+        .join("") +
+      "</tbody></table>";
+  }
+
+  // ---------- events ----------
+  ["cc-a", "cc-b"].forEach((id) => $(id).addEventListener("input", schedule));
+  $("cc-delim").addEventListener("change", refresh);
+  $("cc-compare").addEventListener("click", compare);
+
+  $("cc-tabs").addEventListener("click", (e) => {
+    const btn = e.target.closest(".cc-tab");
+    if (!btn) return;
+    state.tab = btn.dataset.tab;
+    renderResult();
+  });
+
+  function wireFile(side) {
+    const s = side.toLowerCase();
+    $("cc-pick-" + s).addEventListener("click", () => $("cc-file-" + s).click());
+    $("cc-file-" + s).addEventListener("change", async (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      $("cc-" + s).value = await f.text();
+      e.target.value = "";
+      refresh();
+    });
+    const ta = $("cc-" + s);
+    ta.addEventListener("dragover", (e) => e.preventDefault());
+    ta.addEventListener("drop", async (e) => {
+      e.preventDefault();
+      const f = e.dataTransfer.files[0];
+      if (!f) return;
+      ta.value = await f.text();
+      refresh();
+    });
+  }
+  wireFile("A");
+  wireFile("B");
+
+  $("cc-sample").addEventListener("click", () => {
+    $("cc-a").value = SAMPLE_A;
+    $("cc-b").value = SAMPLE_B;
+    refresh();
+  });
+
+  $("cc-clear").addEventListener("click", () => {
+    $("cc-a").value = "";
+    $("cc-b").value = "";
+    state.result = null;
+    $("cc-results").classList.add("cc-hidden");
+    $("cc-msg").textContent = "";
+    refresh();
+  });
+
+  $("cc-download").addEventListener("click", () => {
+    const r = state.result;
+    if (!r) return;
+    const rows = [["Status", "Key", "Column", "File A", "File B"]];
+    r.changed.forEach((ch) => ch.diffs.forEach((d) => rows.push(["Changed", ch.label, d.col, d.a, d.b])));
+    r.removed.forEach((x) => rows.push(["Removed", x.label, "(whole row)", JSON.stringify(x.row), ""]));
+    r.added.forEach((x) => rows.push(["Added", x.label, "(whole row)", "", JSON.stringify(x.row)]));
+
+    const csv = "\ufeff" + Papa.unparse(rows);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "csv-differences.csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  });
+
+  refresh();
+</script>
