@@ -41,4 +41,20 @@ export const TOOLS = [
     glyph: "Δ",
     desc: "Compare two texts and see added and removed words, lines, or characters.",
   },
+    {
+    name: "PDF Editor",
+    short: "PDF Editor",
+    href: "/pdf-editor",
+    color: "#A12FA6",
+    glyph: "Ed",
+    desc: "Edit PDFs in your browser: add text, draw, sign, redact, and reorder pages.",
+  },
+    {
+    name: "Passport Photo Maker",
+    short: "Passport Photo",
+    href: "/passport-photo-maker",
+    color: "#3F7D20",
+    glyph: "ID",
+    desc: "Crop and resize photos in cm, mm, or inches, then print them on a sheet or save a PDF.",
+  },
 ];
